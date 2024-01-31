@@ -431,12 +431,12 @@ def item_unit_pricer(obj):
     df['price_cat_ensemble'] = df['price_ensemble'].apply(manual_pricing)
 
     print("Here we go.")
-    df.head()
-    print(df[0]['price_cat_ensemble'])
+    print(  df.head())
+    print(df['price_cat_ensemble'].iloc[0])
 ### 7th Step : Generating prediction  ###
 
 
-    return df[0]['price_cat_ensemble']
+    return df['price_cat_ensemble'].iloc[0]
 
 
 
@@ -448,6 +448,7 @@ def process_request():
     if not data:
         return 'Invalid or missing JSON object in request', 400
     
+    print('received data of the object !')
     df = item_unit_pricer(data)
     print('ready to send !')
     print(df)
