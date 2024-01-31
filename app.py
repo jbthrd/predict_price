@@ -28,16 +28,12 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.metrics import mean_squared_log_error
 
 # Deep Learning Libraries
-import tensorflow 
 from tensorflow import keras
-from tensorflow.python.keras.models import Model, load_model
-from tensorflow.python.keras.layers import Dense, Input, Dropout
-#Required otherwize error
+#Required written like this otherwize error
+from keras.models import Model
+from keras.layers import Dense, Input, Dropout
 from keras.layers import BatchNormalization
-from tensorflow.python.keras.callbacks import ModelCheckpoint, TensorBoard, EarlyStopping
-from tensorflow.python.keras.metrics import mean_squared_logarithmic_error
-from tensorflow.python.keras.utils import plot_model
-from tensorflow.python.keras import optimizers
+
 
 
 app = Flask(__name__)

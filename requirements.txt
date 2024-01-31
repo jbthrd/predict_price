@@ -1,5 +1,6 @@
 Flask
 pandas
+keras
 google-cloud-storage
 tensorflow
 deepl
