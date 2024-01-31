@@ -1,0 +1,10 @@
+Flask
+pandas
+google-cloud-storage
+tensorflow
+deepl
+nltk
+google-cloud-storage
+scipy
+scikit-learn
+tensorflow
