@@ -1,7 +1,5 @@
 from flask import Flask, request, jsonify
 import pandas as pd
-import os
-import pandas as pd
 import numpy as np
 import deepl
 import re
@@ -33,7 +31,6 @@ from tensorflow import keras
 from keras.models import Model
 from keras.layers import Dense, Input, Dropout
 from keras.layers import BatchNormalization
-
 
 
 app = Flask(__name__)
@@ -435,6 +432,7 @@ def item_unit_pricer(obj):
 
     print("Here we go.")
     df.head()
+    print(df[0]['price_cat_ensemble'])
 ### 7th Step : Generating prediction  ###
 
 
@@ -451,9 +449,10 @@ def process_request():
         return 'Invalid or missing JSON object in request', 400
     
     df = item_unit_pricer(data)
-    # Convert DataFrame to JSON
-    result = df.to_json(orient='records')
-    return jsonify(result)
+    print('ready to send !')
+    print(df)
+
+    return jsonify(df)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
