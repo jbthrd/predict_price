@@ -394,18 +394,32 @@ def item_unit_pricer(obj):
 
 ### 6th step : Loading the weights and initializing infrastructure  ###
     #Need to cache ??
-     #Importing from GCS
-    download_blob(bucket_name, 'Production/model1_weights.hdf5', './model1_weights.hdf5')
-    download_blob(bucket_name, 'Production/model2_weights.hdf5', './model2_weights.hdf5')
 
-    #Initializing models infrastructures
+
+    #Importing from GCS or cache
+   # Function to check if the model file exists and download it if it doesn't
+    def check_and_download_model(bucket_name, model_path, local_path):
+        # Check if the model file already exists locally
+        if not os.path.exists(local_path):
+            print(f"Model not found at {local_path}. Downloading from bucket...")
+            download_blob(bucket_name, model_path, local_path)
+        else:
+            print(f"Model found at {local_path}. Using cached version.")
+
+    # Check and download model 1 if not cached
+    check_and_download_model(bucket_name, 'Production/model1_weights.hdf5', './model1_weights.hdf5')
+
+    # Check and download model 2 if not cached
+    check_and_download_model(bucket_name, 'Production/model2_weights.hdf5', './model2_weights.hdf5')
+
+    # Initializing models infrastructures
     model1 = SMLP(frame.shape[1], 256)
     model1.compile(optimizer='adam', loss=['mean_squared_error'], metrics=['mean_squared_error'])
 
     model2 = SMLP(frame.shape[1], 1024)
     model2.compile(optimizer='adam', loss=['mean_squared_error'], metrics=['mean_squared_error'])
 
-    #Loading
+    # Loading
     model1.load_weights('./model1_weights.hdf5')
     model2.load_weights('./model2_weights.hdf5')
 
@@ -431,8 +445,7 @@ def item_unit_pricer(obj):
     df['price_cat_ensemble'] = df['price_ensemble'].apply(manual_pricing)
 
     print("Here we go.")
-    print(  df.head())
-    print(df['price_cat_ensemble'].iloc[0])
+    df.head()
 ### 7th Step : Generating prediction  ###
 
 
