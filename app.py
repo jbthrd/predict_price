@@ -419,6 +419,7 @@ def item_unit_pricer(obj):
     model2 = SMLP(frame.shape[1], 1024)
     model2.compile(optimizer='adam', loss=['mean_squared_error'], metrics=['mean_squared_error'])
 
+    print("Getting ready to load models")
     # Loading
     model1.load_weights('./model1_weights.hdf5')
     model2.load_weights('./model2_weights.hdf5')

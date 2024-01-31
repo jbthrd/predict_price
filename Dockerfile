@@ -10,7 +10,7 @@ ENV APP_HOME /app
 WORKDIR $APP_HOME
 COPY . ./
 
-# Install production dependencies.--no-cache-dir
+# Install production dependencies.
 RUN pip install -r requirements.txt
 
 # Run the web service on container startup. Here we use the gunicorn
