@@ -8,3 +8,4 @@ google-cloud-storage
 scipy
 scikit-learn
 tensorflow
+gunicorn

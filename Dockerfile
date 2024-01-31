@@ -1,19 +1,21 @@
-# Use an official lightweight Python image.
+# Use the official lightweight Python image.
 # https://hub.docker.com/_/python
 FROM python:3.9-slim
 
-# Set the working directory in the container
-WORKDIR /app
+# Allow statements and log messages to immediately appear in the Knative logs
+ENV PYTHONUNBUFFERED True
 
-# Copy the dependencies file to the working directory
-COPY requirements.txt .
+# Copy local code to the container image.
+ENV APP_HOME /app
+WORKDIR $APP_HOME
+COPY . ./
 
-# Install any dependencies
+# Install production dependencies.
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the content of the local src directory to the working directory
-COPY . .
-
-# Specify the command to run on container start
-CMD ["python", "app.py"]
+# Run the web service on container startup. Here we use the gunicorn
+# webserver, with one worker process and 8 threads.
+# For environments with multiple CPU cores, increase the number of workers
+# to be equal to the cores available.
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 app:app
 
