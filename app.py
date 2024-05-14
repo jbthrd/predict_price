@@ -452,7 +452,7 @@ def item_unit_pricer(obj):
 
 
    # Return also the estimated price : return df[[‘price_ensemble’, ‘price_cat_ensemble’]].iloc[0]
-    return df['price_cat_ensemble'].iloc[0]
+    return df[['price_ensemble', 'price_cat_ensemble']].iloc[0].to_dict()
 
 
 
@@ -465,11 +465,11 @@ def process_request():
         return 'Invalid or missing JSON object in request', 400
     
     print('received data of the object !')
-    df = item_unit_pricer(data)
+    result = item_unit_pricer(data)
     print('ready to send !')
-    print(df)
+    print(result)
 
-    return jsonify(df)
+    return jsonify(result)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
