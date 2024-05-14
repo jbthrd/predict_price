@@ -172,22 +172,22 @@ def download_blob(bucket_name, source_blob_name, destination_file_name):
 # 7th functions : Model architecture
     
 ## MLP model architecture
-def SMLP(frame_shape,i):
-  input = Input(shape=frame_shape,sparse=True,dtype='float32')
-  output = Dense(i,activation='relu')(input)
-  output = BatchNormalization()(output)
-  if i==256:
-    while i!=64:
-      i/=2
-      output = Dense(i,activation='relu')(output)
-  else:
-    while i!=16:
-      i/=2
-      output = Dense(i,activation='relu')(output)
-  output = Dropout(0.2)(output)
-  output = Dense(1)(output)
-  model = Model(input,output)
-  return model
+def SMLP(frame_shape, i):
+    input = Input(shape=(frame_shape,), sparse=True, dtype='float32')
+    output = Dense(i, activation='relu')(input)
+    output = BatchNormalization()(output)
+    if i == 256:
+        while i != 64:
+            i /= 2
+            output = Dense(int(i), activation='relu')(output)
+    else:
+        while i != 16:
+            i /= 2
+            output = Dense(int(i), activation='relu')(output)
+    output = Dropout(0.2)(output)
+    output = Dense(1)(output)
+    model = Model(input, output)
+    return model
 
 def loss(y_true,y_pred):
     """
@@ -445,11 +445,13 @@ def item_unit_pricer(obj):
 
     df['price_cat_ensemble'] = df['price_ensemble'].apply(manual_pricing)
 
+
     print("Here we go.")
     df.head()
 ### 7th Step : Generating prediction  ###
 
 
+   # Return also the estimated price : return df[[‘price_ensemble’, ‘price_cat_ensemble’]].iloc[0]
     return df['price_cat_ensemble'].iloc[0]
 
 
