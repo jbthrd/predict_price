@@ -130,7 +130,6 @@ def process_text_data(sent, regex_special_chars, regex_decimal_digits, regex_whi
 
     #Removing new line, carriage return, double quotes
     sent = sent.replace('\\r', ' ')
-    #sent = sent.replace('\\"', ' ')
     sent = sent.replace('\\n', ' ')
 
     #removing all special charecter except mentioned in regex strings
@@ -141,7 +140,6 @@ def process_text_data(sent, regex_special_chars, regex_decimal_digits, regex_whi
 
     # removing all white spaces  https://bobbyhadz.com/blog/python-remove-whitespace-regex
     sent = regex_white_space.sub(' ', sent)
-    #sent = re.sub(r'^\s+', '', sent, flags=re.MULTILINE)
 
     #removing end space and converting to lower
     sent = sent.strip().lower()
@@ -229,217 +227,6 @@ def manual_pricing(price):
 bucket_name = 'training_data_price_prediction' 
 
 
-
-# def item_unit_pricer(obj):
-
-# ###First step : Map the object to DataFrame format###
-#     df = object_to_df(obj)
-# ###First step : Map the object to DataFrame format###
-    
-    
-# ###Second step : handle translation###
-#     df['en_name'] = 'no_name'
-#     df.loc[~df['name'].isnull(), 'en_name'] = df[~df['name'].isnull()]['name'].apply(translate_to_english)
-#     df.head() #I think it's not a bad idea to keep such commands even if they are not "active".
-
-#     df['en_description'] = 'no_description'
-#     df.loc[~df['description'].isnull(), 'en_description'] = df[~df['description'].isnull()]['description'].apply(translate_to_english)
-#     df.head()
-#     print("Finished the translation. Now just translating column names.")
-
-#     df['Retroc_category'] = df['category'] # I think this will feel strange in the future (why indicate Retroc ??) but you can always change it and it will simplify my current work
-#     df['Retroc_subcategory'] = df['subcategoryName']
-
-#     df.fillna('', inplace=True) #important for translation
-#     #Checkpoint
-#     df.to_csv('df_with_translations.csv')
-
-    
-#     #Translating the categories
-#     df, translated_cats_map = translate_column(df, 'Retroc_category')
-#     df, translated_subcats_map = translate_column(df, 'Retroc_subcategory')
-#     df.head()
-#     print("Translated the categories. Now mapping the item condition.")
-# ###Second step : handle translation###
-
-
-# ###Third step : Define the mapping ###
-#     condition_mapping = {
-#         'Neuf': 1,
-#         'Comme neuf': 2,
-#         'Bon état': 3,
-#         'Bon': 3,
-#         'État moyen': 4,
-#         'Passable': 4,
-#         'Abîmé': 5
-#     }
-
-#     # Apply the mapping to the item_condition column
-#     df['item_condition_id'] = df['item_condition'].replace(condition_mapping)
-
-#     df['item_condition_id'].value_counts()
-
-
-#     print("Dealt with item condition. Now starting the preprocessing.")
-
-
-
-#     df['brand_name'] = None
-# ### Third step : Define the mapping ###
-    
-
-# ### 4th step : Pre-processing ###
-#     df.fillna('', inplace=True)
-#     # Instantiating the category name
-#     df['category_name'] = df['Retroc_category_translated'] + ' - ' +  df['Retroc_subcategory_translated']
-
-
-#     # Data preprocessing
-
-#     df['en_description'] = df['en_description'].str.replace('^no description yet$', '', regex=True)
-
-#     print("Dealt with null values")
-
-#     ## Text features
-#     df['name'] = df['en_name'] + " " + df['brand_name'] #brand_name is allways empty for the moment but it's coming !
-#     df['text'] = df['en_description'] + " " + df['en_name'] + " " + df['category_name']
-
-#     print("Built text and name features")
-
-
-#      ###################### Applying our preprocessing functions
-#     ## Text cleaning
-
-#     df['name'] = df['name'].apply(lambda x : decontracted(x))
-#     df['text'] = df['text'].apply(lambda x : decontracted(x))
-
-#     print("Applied the decontraction")
-
-#     ## Lemmatization and final textual pre-processing
-#     regex_special_chars = re.compile('[^A-Za-z0-9.]+')
-#     regex_decimal_digits = re.compile('(?<!\d)\.(?!\d)')
-#     regex_white_space = re.compile(r'\s+')
-
-#     all_stopwords = set(stopwords.words("english")) - {"no", "nor", "not"} #Negation is super important !
-
-
-#     df['name'] = df['name'].apply(lambda x : process_text_data(x, regex_special_chars, regex_decimal_digits,
-#                                                                   regex_white_space, all_stopwords))
-#     df['text'] = df['text'].apply(lambda x : process_text_data(x, regex_special_chars, regex_decimal_digits,
-#                                                                   regex_white_space, all_stopwords))
-
-#     print("Applied final text preprocessing")
-
-# ### 4th step : Pre-processing ###
-    
-
-
-# ### 5th step : Test-encoding  ###
-
-#     # Download the fitted TFIDF vectorizers 
-#     download_blob(bucket_name, 'Production/name_basic_vecto.joblib', './name_basic_vecto.joblib')
-#     download_blob(bucket_name, 'Production/text_basic_vecto.joblib', './text_basic_vecto.joblib')
-
-#     #Loading the fitted TFIDFs 
-#     name_tfidf = joblib.load('./name_basic_vecto.joblib')
-#     text_tfidf = joblib.load('./text_basic_vecto.joblib')
-
-#     ### Applying TFIDF
-#     print("Loaded big_name and big_tetx. Applying TFIDF. ")
-
-#     X_name = tfidf_transform(to_tf=df['name'],
-#                             vectorizer=name_tfidf)
-#     X_text = tfidf_transform(to_tf=df['text'],
-#                             vectorizer=text_tfidf)
-
-#     print("Applied TFIDF on name and text feature.")
-
-
-
-#    ## One hot encoding
-
-#     # Download and load the one_hot_encoder
-#     download_blob(bucket_name, 'Production/one_hot_encoder.joblib', './one_hot_encoder.joblib')
-#     ohe = joblib.load('./one_hot_encoder.joblib')
-
-#     X_item_condition = ohe.transform(np.reshape(df['item_condition_id'].values, (-1, 1))).shape
-
-#     print("One-hot encoded item condition.")
-
-#     # Stacking
-#     frame = hstack((X_name,
-#                     X_text,
-#                     X_item_condition)).tocsr().astype('float32')
-
-
-#     print("Stacked features into trainframe")
-   
-#     print("Finished the preprocessing. Now loading models' weights.")
-
-# ### 5th step : Test-encoding  ###
-    
-
-# ### 6th step : Loading the weights and initializing infrastructure  ###
-#     #Need to cache ??
-
-
-#     #Importing from GCS or cache
-#    # Function to check if the model file exists and download it if it doesn't
-#     def check_and_download_model(bucket_name, model_path, local_path):
-#         # Check if the model file already exists locally
-#         if not os.path.exists(local_path):
-#             print(f"Model not found at {local_path}. Downloading from bucket...")
-#             download_blob(bucket_name, model_path, local_path)
-#         else:
-#             print(f"Model found at {local_path}. Using cached version.")
-
-#     # Check and download model 1 if not cached
-#     check_and_download_model(bucket_name, 'Production/model1_weights.hdf5', './model1_weights.hdf5')
-
-#     # Check and download model 2 if not cached
-#     check_and_download_model(bucket_name, 'Production/model2_weights.hdf5', './model2_weights.hdf5')
-
-#     # Initializing models infrastructures
-#     model1 = SMLP(frame.shape[1], 256)
-#     model1.compile(optimizer='adam', loss=['mean_squared_error'], metrics=['mean_squared_error'])
-
-#     model2 = SMLP(frame.shape[1], 1024)
-#     model2.compile(optimizer='adam', loss=['mean_squared_error'], metrics=['mean_squared_error'])
-
-#     print("Getting ready to load models")
-#     # Loading
-#     model1.load_weights('./model1_weights.hdf5')
-#     model2.load_weights('./model2_weights.hdf5')
-
-
-
-#     print("Models laoded. Generating prediction.")
-# ### 6th step : Loading the weights  ###
-    
-# ### 7th Step : Generating prediction  ###
-
-#     y_pred_model1 = model1.predict(frame)
-#     y_pred_model2 = model2.predict(frame)
-
-#     wmin = 0.463
-#     y_pred_ensemble = wmin * y_pred_model1 + (1-wmin) * y_pred_model2
-
-
-#     # We don't store the model 1 prices and model 2 prices.
-#     df['price_ensemble'] = np.exp(y_pred_ensemble) - 1
-
-#     # Add price class columns to df_test
-
-#     df['price_cat_ensemble'] = df['price_ensemble'].apply(manual_pricing)
-
-
-#     print("Here we go.")
-#     df.head()
-# ### 7th Step : Generating prediction  ###
-
-
-#    # Return also the estimated price : return df[[‘price_ensemble’, ‘price_cat_ensemble’]].iloc[0]
-#     return df[['price_ensemble', 'price_cat_ensemble']].iloc[0].to_dict()
 
 def item_units_pricer(objs):
     dfs = []
@@ -626,7 +413,6 @@ def process_request():
         return 'Invalid or missing JSON object in request', 400
     
     print('received data of the object !')
-   # result = item_unit_pricer(data)
     results = item_units_pricer(data)
     print('ready to send !')
     print(results)
