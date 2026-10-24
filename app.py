@@ -56,7 +56,7 @@ def object_to_df(obj):
 
 
 #Second step : Translate object elements
-auth_key = "96434628-8786-869f-6249-8a0073d763cd"  # Retroc pro key
+auth_key = ""  # Retroc pro key
 translator = deepl.Translator(auth_key)
 
 def translate_to_english(sentence): #ugly but efficient
